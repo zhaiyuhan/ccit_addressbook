@@ -6,7 +6,7 @@ from flet import (
     UserControl,
     View,
 )
-from flet_core import colors
+from flet_core import colors, alignment, ThemeMode
 
 import Pages.SettingPage
 import Pages.GroupPage
@@ -68,6 +68,7 @@ class MyAppBar(UserControl):
 
 
 def main(page: ft.Page):
+    page.theme_mode = ThemeMode.LIGHT
     if page.client_storage.contains_key("DB_NAME"):
         print(page.client_storage.get("DB_NAME"))
     else:
@@ -152,4 +153,4 @@ if __name__ == "__main__":
     # with ConfigManager() as cm:
     # cm.setDBName("DEMO")
     # print(cm.getDBName())
-    ft.app(target=main)
+    ft.app(target=main, assets_dir="assets")
