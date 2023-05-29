@@ -1,13 +1,15 @@
 import flet as ft
 from flet import (
-    TextButton,
+    Container,
     NavigationRail,
     Row,
     UserControl,
+    View,
 )
+from flet_core import colors
 
 import Pages.SettingPage
-
+import Pages.GroupPage
 import Control.ContactInfoPanel as clPanel
 import Control.ContactList as clList
 import Control.ContactAddDlg as clDlg
@@ -94,19 +96,19 @@ def main(page: ft.Page):
         page.views.clear()
         if page.route == "/":
             contactPanel = clPanel.ContactInfoPanel()  # 联系人信息展示面板
-            contactList = clList.ContactList(contactPanel)  # 联系人列表
+            contactList = clList.ContactList(contactPanel, page)  # 联系人列表
             contactSearch = clSearch.ContactSearch(contactList)  # 联系人搜索框
             contactPanel.BindContactList(contactList)
             page.views.append(
-                ft.View(
+                View(
                     "/",
-                    [ft.Row(
+                    [Row(
                         [
                             MyAppBar(open_dlg, 0),
-                            ft.Column([contactSearch,
-                                       ft.Row([contactList],
-                                              expand=True,
-                                              scroll=ft.ScrollMode.AUTO)]),
+                            Container(expand=5, content=ft.Column([contactSearch,
+                                                                   Row([contactList],
+                                                                       expand=True,
+                                                                       scroll=ft.ScrollMode.AUTO)])),
                             contactPanel,
                         ],
                         expand=True
@@ -114,81 +116,27 @@ def main(page: ft.Page):
             )
             add_dlg.BindContactList(contactList)
 
-            def page_resize(e):
-                contactList.width = page.window_width - 600
-                page.update()
-                print("New page size:", page.window_width, page.window_height)
-
-            page.on_resize = page_resize
         if page.route == "/group":
             page.views.append(
-                ft.View(
+                View(
                     "/group",
-                    [ft.Row(
+                    [Row(
                         [
                             MyAppBar(open_dlg, 1),
-                            ft.PopupMenuButton(
-                                items=[
-                                    ft.PopupMenuItem(text="Item 1"),
-                                    ft.PopupMenuItem(icon=ft.icons.POWER_INPUT, text="Check power"),
-                                    ft.PopupMenuItem(
-                                        content=ft.Row(
-                                            [
-                                                ft.Icon(ft.icons.HOURGLASS_TOP_OUTLINED),
-                                                ft.Text("Item with a custom content"),
-                                            ]
-                                        ),
-                                        on_click=lambda _: print("Button with a custom content clicked!"),
-                                    ),
-                                    ft.PopupMenuItem(),  # divider
-                                    ft.PopupMenuItem(
-                                        text="Checked item", checked=False,
-                                    ),
-                                ]
-                            ),
-                            ft.DataTable(
-                                columns=[
-                                    ft.DataColumn(ft.Text("First name")),
-                                    ft.DataColumn(ft.Text("Last name")),
-                                    ft.DataColumn(ft.Text("Age"), numeric=True),
-                                ],
-                                rows=[
-                                    ft.DataRow(
-                                        cells=[
-                                            ft.DataCell(ft.Text("John")),
-                                            ft.DataCell(ft.Text("Smith")),
-                                            ft.DataCell(ft.Text("43")),
-                                        ],
-                                    ),
-                                    ft.DataRow(
-                                        cells=[
-                                            ft.DataCell(ft.Text("Jack")),
-                                            ft.DataCell(ft.Text("Brown")),
-                                            ft.DataCell(ft.Text("19")),
-                                        ],
-                                    ),
-                                    ft.DataRow(
-                                        cells=[
-                                            ft.DataCell(ft.Text("Alice")),
-                                            ft.DataCell(ft.Text("Wong")),
-                                            ft.DataCell(ft.Text("25")),
-                                        ],
-                                    ),
-                                ],
-                            ),
-
+                            Container(expand=10,
+                                      content=Pages.GroupPage.GroupPage(page))
                         ],
                         expand=True
                     )])
             )
         if page.route == "/setting":
             page.views.append(
-                ft.View(
+                View(
                     "/setting",
-                    [ft.Row(
+                    [Row(
                         [
                             MyAppBar(open_dlg, 2),
-                            Pages.SettingPage.SettingPage(page),
+                            Pages.SettingPage.SettingPage(page)
                         ],
                         expand=True
                     )])

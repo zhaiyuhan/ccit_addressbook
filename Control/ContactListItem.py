@@ -19,7 +19,11 @@ class DeleteBanner(Banner):
             self.page.update()
 
         def delete_event(e):
-            with DBService.DBService("DB1") as dbService:
+            if not self.page.client_storage.get("DB_PATH"):
+                self.db_name = self.page.client_storage.get("DB_NAME")
+            else:
+                self.db_name = self.page.client_storage.get("DB_PATH")
+            with DBService.DBService(db_name=self.db_name) as dbService:
                 dbService.delete_by_name('contactlist', contact_name)
                 self.page.banner.open = False
                 print(type(self._contact_list))

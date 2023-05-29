@@ -1,4 +1,3 @@
-import asyncio
 import sqlite3
 
 
@@ -29,19 +28,23 @@ class DBService:
         self.con.commit()
 
     def query_db_all(self, table_name: str):
-        self.cur.execute(f'SELECT * FROM {table_name}')
-        result = []
-        for row in self.cur:
-            result.append(row)
-        self.con.commit()
-        return result
-
-    async def async_query_all(self, table_name: str):
-        results = self.cur.execute(f'SELECT * FROM {table_name}')
-        return results.fetchall()
+        try:
+            self.cur.execute(f'SELECT * FROM {table_name}')
+            result = []
+            for row in self.cur:
+                result.append(row)
+            self.con.commit()
+            return result
+        except Exception as e:
+            print(e)
+            return []
 
     def query_db_by_name(self, table_name: str, contact_name: str):
         results = self.cur.execute(f'''SELECT * FROM {table_name} WHERE name = '{contact_name}';''')
+        return results.fetchall()
+
+    def query_db_by_group(self, table_name: str, group_name: str):
+        results = self.cur.execute(f'''SELECT * FROM {table_name} WHERE address_group = '{group_name}';''')
         return results.fetchall()
 
     def query_db_by_name_fuzzy(self, table_name: str, contact_name: str):
