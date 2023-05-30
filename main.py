@@ -6,16 +6,14 @@ from flet import (
     UserControl,
     View,
 )
-from flet_core import colors, alignment, ThemeMode
+from flet_core import ThemeMode
 
-import Pages.SettingPage
-import Pages.GroupPage
+import Control.ContactAddDlg as clDlg
 import Control.ContactInfoPanel as clPanel
 import Control.ContactList as clList
-import Control.ContactAddDlg as clDlg
 import Control.ContactSearch as clSearch
-
-from Foundation.MyUtility import ConfigManager
+import Pages.GroupPage
+import Pages.SettingPage
 
 
 class MyAppBar(UserControl):
@@ -96,9 +94,9 @@ def main(page: ft.Page):
     def route_change(e):
         page.views.clear()
         if page.route == "/":
-            contactPanel = clPanel.ContactInfoPanel()  # 联系人信息展示面板
+            contactPanel = clPanel.ContactInfoPanel(page)  # 联系人信息展示面板
             contactList = clList.ContactList(contactPanel, page)  # 联系人列表
-            contactSearch = clSearch.ContactSearch(contactList)  # 联系人搜索框
+            contactSearch = clSearch.ContactSearch(contactList, page)  # 联系人搜索框
             contactPanel.BindContactList(contactList)
             page.views.append(
                 View(
@@ -150,7 +148,4 @@ def main(page: ft.Page):
 
 
 if __name__ == "__main__":
-    # with ConfigManager() as cm:
-    # cm.setDBName("DEMO")
-    # print(cm.getDBName())
     ft.app(target=main, assets_dir="assets")

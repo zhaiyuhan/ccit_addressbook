@@ -24,8 +24,11 @@ class DBService:
         insert_key = insert_key[0:len(insert_key) - 1]
         insert_str = '''INSERT INTO {table_name}({key})VALUES ({value})''' \
             .format(table_name=table_name, key=insert_key, value=insert_value)
-        self.con.execute(insert_str)
-        self.con.commit()
+        try:
+            self.con.execute(insert_str)
+            self.con.commit()
+        except Exception as e:
+            print(e)
 
     def query_db_all(self, table_name: str):
         try:

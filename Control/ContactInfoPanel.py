@@ -4,7 +4,8 @@ from flet import (
     Card,
     TextField,
     ElevatedButton,
-    Column
+    Column,
+    Page
 )
 
 from Foundation import DBService
@@ -29,13 +30,21 @@ class ContactInfoPanel(UserControl):
         print(self._contact_info)
         self.update()
 
-    def __init__(self):
+    def __init__(self, _page: Page):
         super().__init__()
+        self.page = _page
         self._contact_list = None
         self._nameTextField = TextField(label='姓名', value='', read_only=True)
         self._telTextField = TextField(label='手机号', value='', read_only=True)
         self._addressTextField = TextField(label='通讯地址', value='', read_only=True)
         self._editElevatedButton = ElevatedButton()
+        self.db_name = str()
+        # 如果地址为空 就把db_name赋值为数据库的名字
+        if not self.page.client_storage.get("DB_PATH"):
+            self.db_name = self.page.client_storage.get("DB_NAME")
+        else:
+            self.db_name = self.page.client_storage.get("DB_PATH")
+        print('搜索框获取到的数据库', self.db_name)
 
     def BindContactList(self, contact_list):
         self._contact_list = contact_list
@@ -59,7 +68,7 @@ class ContactInfoPanel(UserControl):
             if self._editElevatedButton.text == '修改':
                 self.active_edit()
             else:
-                with DBService.DBService("DB1") as dbService:
+                with DBService.DBService(self.db_name) as dbService:
                     dbService.update_db_by_id('contactlist', self._contact_info[0],
                                               [f'{self._nameTextField.value}',
                                                f'{self._telTextField.value}',

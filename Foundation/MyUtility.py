@@ -20,7 +20,11 @@ class CheckInput:
     def check_tel(cls, check_str: str) -> Optional[str]:
         if len(check_str) < 7:
             return '非法手机号长度'
-        info = Phone().find(check_str)
+        try:
+            info = Phone().find(check_str)
+        except Exception as e:
+            print('获取失败', e)
+            return e.__str__()
         if info['phone_type'] != '':
             return None
 
@@ -35,9 +39,16 @@ class SortContact:
         temp_list = []
         for i in range(0, 30):
             temp_list.append([])  # 初始化列表
-        for i in contact_list:
-            temp_list[ord(pinyin(i[1], style=Style.FIRST_LETTER)[0][0])-97].append(i[1])
 
+        for i in contact_list:
+            if ord('a') <= ord(i[1][0]) <= ord('z'):
+                temp_list[ord(i[1][0])-97].append(i[1])
+                continue
+            if ord('A') <= ord(i[1][0]) <= ord('Z'):
+                temp_list[ord(i[1][0])-65].append(i[1])
+                continue
+            else:
+                temp_list[ord(pinyin(i[1], style=Style.FIRST_LETTER)[0][0])-97].append(i[1])
         return temp_list
 
 

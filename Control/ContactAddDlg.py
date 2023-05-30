@@ -40,7 +40,13 @@ class ContactAddDlg(AlertDialog):
         self._tel_TextFild.value = ''
         self._address_TextFile.value = ''
 
+        def clear_TextField():
+            self._name_TextFild.value = ''
+            self._tel_TextFild.value = ''
+            self._address_TextFile.value = ''
+
         def close_event(e):
+            clear_TextField()
             self.open = False
             page.update()
 
@@ -59,18 +65,22 @@ class ContactAddDlg(AlertDialog):
                 self._tel_TextFild.focus()
                 self._tel_TextFild.update()
                 error_code += 1
-
+            # 没有出错 把信息写入数据库
             if error_code == 100:
                 with DBService.DBService("DB1") as dbService:
                     dbService.insert_db('contactlist', {'name': f'{self._name_TextFild.value}',
                                                         'tel': f'{self._tel_TextFild.value}',
-                                                        'address': f'{self._address_TextFile.value}'})
+                                                        'address': f'{self._address_TextFile.value}',
+                                                        'address_group': f'{self._address_TextFile.value}'})
+                    dbService.insert_db('grouplist', {'group_name': f'{self._address_TextFile.value}'})
+                    clear_TextField()
                     self.open = False
                     page.update()
                 self._contact_list.lv.controls.clear()
                 self._contact_list.lv.update()
                 self._contact_list.update_data_all()
                 self._contact_list.lv.update()
+
 
         super().__init__(
             modal=True,
