@@ -31,7 +31,11 @@ class ContactSearch(UserControl):
             data = self._searchTextField.value
             # 在此处进行单个用户的查询
             with DBService.DBService(self.db_name) as dbService_query_by_name:
-                temp_data = dbService_query_by_name.query_db_by_name_fuzzy('contactlist', data)
+                if data.isdigit():
+                    print('yes')
+                    temp_data = dbService_query_by_name.query_db_by_tel('contactlist', data)
+                else:
+                    temp_data = dbService_query_by_name.query_db_by_name_fuzzy('contactlist', data)
                 print('通过姓名查询到的信息为', temp_data)
                 self._contact_list.lv.controls.clear()
                 self._contact_list.lv.update()

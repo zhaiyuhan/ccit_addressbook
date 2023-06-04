@@ -42,6 +42,10 @@ class DBService:
             print(e)
             return []
 
+    def query_db_by_tel(self, table_name: str, tel: str):
+        results = self.cur.execute(f'''SELECT * FROM {table_name} WHERE tel LIKE '%{tel}%';''')
+        return results.fetchall()
+
     def query_db_by_name(self, table_name: str, contact_name: str):
         results = self.cur.execute(f'''SELECT * FROM {table_name} WHERE name = '{contact_name}';''')
         return results.fetchall()
